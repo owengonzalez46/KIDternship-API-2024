@@ -34,6 +34,7 @@ execute_sql() {
 
 # Truncate the menu table
 execute_sql "TRUNCATE TABLE public.menu;"
+execute_sql "TRUNCATE TABLE public.orders;"
 
 # Insert example products
 for product in "${PRODUCTS[@]}"; do

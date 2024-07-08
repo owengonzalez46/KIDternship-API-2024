@@ -25,55 +25,51 @@ This repository contains two directories: `flask_docker_kidternship` and `postgr
 ### Running the Flask Server
 1. Navigate to `flask_docker_kidternship`.
 2. Execute `docker-compose up -d` to bring up the Flask server.
+3. Create a `.env` file in this directory with the following parameters (modify to fit your needs):
+
+    - `DATABASE_HOST="127.0.0.1"`
+
+    - `DATABASE_PORT="5432"`
+
+    - `DATABASE_NAME="store"`
+
+    - `DATABASE_USER="CREATEYOUROWNUSERNAME"`
+
+    - `DATABASE_PASS="CREATEYOUROWNPASSWORD"`
+
+    - `POSTS_JSON_FILE="posts.json"`
+
+    - `POSTS_LOG_FILE="posts.log"`
 
 ### Running Postgres Docker
 1. Navigate to `postgres_docker_kidternship`.
 2. Execute `docker-compose up -d` to bring up the PostgreSQL database.
+3. Execute `createTable.sh` to create the default blank PostgreSQL tables in the database. 
+4. Create a `.env` file in this directory with the following parameters (modify to fit your needs):
+
+    - `DATABASE_HOST="127.0.0.1"`
+
+    - `DATABASE_PORT="5432"`
+
+    - `DATABASE_NAME="store"`
+
+    - `DATABASE_USER="CREATEYOUROWNUSERNAME"`
+
+    - `DATABASE_PASS="CREATEYOUROWNPASSWORD"`
+
+    - `POSTS_JSON_FILE="posts.json"`
+
+    - `POSTS_LOG_FILE="posts.log"`
 
 ## Notes
 - Make sure Docker and Docker Compose are installed.
 - Adjust network configurations and file paths as needed.
 
-## Flask Directory
-
-### Prerequisites
-- Create a `.env` file in this directory with the following parameters (modify to fit your needs):
-
-    - `DATABASE_HOST="127.0.0.1"`
-
-    - `DATABASE_PORT="5432"`
-
-    - `DATABASE_NAME="store"`
-
-    - `DATABASE_USER="CREATEYOUROWNUSERNAME"`
-
-    - `DATABASE_PASS="CREATEYOUROWNPASSWORD"`
-
-    - `POSTS_JSON_FILE="posts.json"`
-
-    - `POSTS_LOG_FILE="posts.log"`
-    
-## Postgres Directory
-
-### Prerequisites
-- Create a `.env` file in this directory with the following parameters (modify to fit your needs):
-
-    - `DATABASE_HOST="127.0.0.1"`
-
-    - `DATABASE_PORT="5432"`
-
-    - `DATABASE_NAME="store"`
-
-    - `DATABASE_USER="CREATEYOUROWNUSERNAME"`
-
-    - `DATABASE_PASS="CREATEYOUROWNPASSWORD"`
-
-    - `POSTS_JSON_FILE="posts.json"`
-
-    - `POSTS_LOG_FILE="posts.log"`
 
 ### Initializing Default Databases
-- Execute `.sh` file to create default databases.
+- Execute `createTable.sh` file to create default databases.
+- Execute `resetWordcloud.sh` file to truncate the wordcloud table and insert thirty random words from the included array.
+- Execute `resetDatabase.sh` file to truncate the menu and orders tables and to insert the default menu from the included array. 
 
 # API Endpoints
 - **Root Route**: `/` (GET)
