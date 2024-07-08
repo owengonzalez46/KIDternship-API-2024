@@ -1,0 +1,13 @@
+Flask
+pytz
+flask-cors
+http.client
+requests
+flask-socketio
+better_profanity
+psycopg2
+wordcloud
+numpy
+matplotlib
+Pillow
+nltk

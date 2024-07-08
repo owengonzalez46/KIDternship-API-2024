@@ -1,0 +1,23 @@
+version: '2'
+services:
+    kidternship_web:
+        build: .
+        environment:
+          - DATABASE_HOST=${DATABASE_HOST}
+          - DATABASE_PORT=${DATABASE_PORT}
+          - DATABASE_NAME=${DATABASE_NAME}
+          - DATABASE_USER=${DATABASE_USER}
+          - DATABASE_PASS=${DATABASE_PASS}
+
+        ports:
+            - "3006:5000"
+        volumes:
+            - .:/code
+        restart: always
+        container_name: kidternship_flask_server
+        networks:
+          - kidternship_network
+
+networks:
+  kidternship_network:
+    name: kidternship_network

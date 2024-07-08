@@ -1,0 +1,112 @@
+#To add a product to the database
+curl -X POST https://api-kidternship.thegonzalezes.io/add_product \
+     -H "Content-Type: application/json" \
+     -d '{
+           {"product_title": "Sample Product",
+           "product_description": "This is a sample product description.",
+           "product_category": "hats",
+           "product_price": 19.99,
+           "product_quantity": 100},
+           {"product_title": "Sample Product",
+           "product_description": "This is a sample product description.",
+           "product_category": "hats",
+           "product_price": 19.99,
+           "product_quantity": 100}
+         }'
+{
+  "message": "Product added successfully"
+}
+
+
+
+# Function to insert a new product into the database
+def insertMenuItem(menu):
+    try:
+        with psycopg2.connect(
+            host=databaseHost,
+            port=databasePort,
+            user=authacct,
+            password=authacctpwd,
+            database='store'
+        ) as conn:
+            with conn.cursor() as cursor:
+                insert_query = """
+                INSERT INTO menu (product_title, product_description, product_category, product_price, product_quantity)
+                VALUES (%s, %s, %s, %s, %s);
+                """
+                cursor.execute(insert_query, (
+                    product['product_title'],
+                    product['product_description'],
+                    product['product_category'],
+                    product['product_price'],
+                    product['product_quantity']
+                ))
+                conn.commit()
+                return True
+    except Error as e:
+        print(f"Error: {e}")
+        return False
+
+
+
+
+# Route to get all posts
+@app.route('/showPosts', methods=['GET'])
+def get_posts():
+    posts = fileOperations.read_posts()  # Read all posts from the file
+    return jsonify(posts)  # Return posts as JSON
+
+# Route to handle adding a new post
+@app.route('/post', methods=['POST'])
+def add_post():
+    content = handle_request_data()
+    
+    if dataSanitization.contains_profanity(content):
+        return jsonify({'message': 'Post contains profane language'}), 400
+    
+    censored_content = dataSanitization.censor_content(content)
+    post = {"content": censored_content}
+
+    fileOperations.log_and_append("post", post)
+    socketio.emit('new_post', post)
+    
+    return jsonify({'message': 'Post added successfully'}), 201
+    
+# Route to handle adding a new product
+@app.route('/addOrder', methods=['POST'])
+def add_product():
+    if request.is_json:
+        data = request.get_json()
+        sanitized_data = dataSanitization.sanitize_input_add_product(data)
+        
+        if sanitized_data is None:
+            return jsonify({'message': 'Input contains profane language and cannot be accepted.'}), 400
+        
+        if databaseManagement.insert_product(sanitized_data):
+            fileOperations.log_and_append("product", sanitized_data)
+            return jsonify({'message': 'Product added successfully'}), 201
+        else:
+            return jsonify({'message': 'Failed to add product'}), 500
+    else:
+        return jsonify({'message': 'Invalid input, expected JSON'}), 400
+
+
+# Function to handle incoming request data and sanitize it
+def sanitize_input_add_product(data):
+    sanitized_data = {}
+    
+    title = data.get('product_title', '')
+    description = data.get('product_description', '')
+    category = data.get('product_category', '')
+    
+    if profanity.containsProfanity(title) or profanity.containsProfanity(description) or profanity.containsProfanity(category):
+        return None
+    
+    sanitized_data['product_title'] = title
+    sanitized_data['product_description'] = description
+    sanitized_data['product_category'] = category
+    sanitized_data['product_price'] = data.get('product_price', 0)
+    sanitized_data['product_quantity'] = data.get('product_quantity', 0)
+    
+    return sanitized_data
+    
